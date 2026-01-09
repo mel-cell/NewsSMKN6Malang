@@ -1,0 +1,21 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# VS Code
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE
+.idea/
+*.slnx
+
+# OS generated files
+.DS_Store
+Thumbs.db
