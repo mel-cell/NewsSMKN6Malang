@@ -12,12 +12,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>6kiz3j44es</Fingerprint>
-      <Integrity>Smg8+14Z12e/9uVu6AsqVuwPSZtGzYePk4IE4vhg61U=</Integrity>
+      <Fingerprint>54j6nak8dc</Fingerprint>
+      <Integrity>RcVIe94CF0VZ0O1N1fIBLcFkcFFmOg1uNaYRBgXnSOc=</Integrity>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>67</FileLength>
-      <LastWriteTime>Fri, 09 Jan 2026 13:20:58 GMT</LastWriteTime>
+      <FileLength>859</FileLength>
+      <LastWriteTime>Fri, 09 Jan 2026 14:37:24 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\app.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\bootstrap\bootstrap.min.css'))">
@@ -272,12 +272,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>egmlocwyrp</Fingerprint>
-      <Integrity>ElNUyYFzSRe5c1o7/uEuwt0CW2AsGAddIP4pPj1AD1A=</Integrity>
+      <Fingerprint>w9kqtqabxq</Fingerprint>
+      <Integrity>3NHUI4bizOSmHC1ziBUm6zZmuiNEnWRsQb2CAD8HL1o=</Integrity>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>1325</FileLength>
-      <LastWriteTime>Fri, 09 Jan 2026 14:07:16 GMT</LastWriteTime>
+      <FileLength>1224</FileLength>
+      <LastWriteTime>Fri, 09 Jan 2026 14:15:27 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\sample-data\weather.json'))">

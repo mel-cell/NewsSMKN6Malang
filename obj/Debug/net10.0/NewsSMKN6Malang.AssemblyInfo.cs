@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NewsSMKN6Malang")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7852c35ee4d73f37179aa5c44c651c393a7ebc4")]
 [assembly: System.Reflection.AssemblyProductAttribute("NewsSMKN6Malang")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NewsSMKN6Malang")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,1 +1,42 @@
-﻿/* Custom styles if needed, mostly empty now using Tailwind */
+﻿/* Custom Scrollbar for WebKit (Chrome/Edge/WebView) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0; /* slate-200 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1; /* slate-300 */
+}
+
+/* Base Font Settings */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc; /* slate-50 */
+}
+
+/* Sidebar Navigation Active State */
+.nav-item {
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-item.active {
+  background-color: #eff6ff; /* blue-50 */
+  color: #0056d2; /* primary */
+  border-left-color: #0056d2;
+}
+
+.nav-item.active svg {
+  color: #0056d2;
+  fill: rgba(0, 86, 210, 0.1);
+}

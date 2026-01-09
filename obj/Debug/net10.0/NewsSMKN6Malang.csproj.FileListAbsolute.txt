@@ -81,7 +81,6 @@
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/scopedcss/bundle/NewsSMKN6Malang.styles.css
-/home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/1xysjmpl0y-{0}-6kiz3j44es-6kiz3j44es.gz
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/nngznfbgrj-{0}-etnb7xlipe-etnb7xlipe.gz
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/shsu27xult-{0}-kao5znno1s-kao5znno1s.gz
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/ru23iq8u9m-{0}-5ipweew5fc-5ipweew5fc.gz
@@ -107,4 +106,6 @@
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/NewsSMKN6Malang.pdb
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/NewsSMKN6Malang.genruntimeconfig.cache
 /home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/ref/NewsSMKN6Malang.dll
-/home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/wjyp27z2p4-{0}-egmlocwyrp-egmlocwyrp.gz
+/home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/NewsSMKN6Malang.sourcelink.json
+/home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/wjyp27z2p4-{0}-w9kqtqabxq-w9kqtqabxq.gz
+/home/mellow/code/LANG-PROJECT/C#/UPK/NewsSMKN6Malang/obj/Debug/net10.0/compressed/1xysjmpl0y-{0}-54j6nak8dc-54j6nak8dc.gz

@@ -32,10 +32,9 @@
     <!-- Auto-copy Photino Native Library for Linux -->
     <Target Name="CopyPhotinoNative" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
         <ItemGroup>
-            <NativeLib Include="$(NuGetPackageRoot)photino.native/4.0.22/runtimes/linux-x64/native/libPhotino.Native.so" />
+            <NativeLib Include="$(NuGetPackageRoot)photino.native/4.0.22/runtimes/linux-x64/native/Photino.Native.so" />
         </ItemGroup>
-        <Copy SourceFiles="@(NativeLib)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
-        <!-- Also copy to regular publish/run path just in case -->
+        <Copy SourceFiles="@(NativeLib)" DestinationFiles="$(OutputPath)libPhotino.Native.so" SkipUnchangedFiles="true" />
         <Copy SourceFiles="@(NativeLib)" DestinationFiles="$(OutputPath)Photino.Native.so" SkipUnchangedFiles="true" />
     </Target>
 

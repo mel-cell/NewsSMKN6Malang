@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace NewsSMKN6Malang.Data
 {
@@ -49,6 +50,11 @@ namespace NewsSMKN6Malang.Data
             };
 
             return Task.FromResult(news);
+        }
+        public async Task<NewsItem> GetNewsByIdAsync(int id)
+        {
+            var newsList = await GetNewsAsync();
+            return newsList.FirstOrDefault(n => n.Id == id);
         }
     }
 }
