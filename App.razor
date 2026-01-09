@@ -1,0 +1,21 @@
+<ErrorBoundary>
+    <ChildContent>
+        <Router AppAssembly="@typeof(Program).Assembly">
+            <Found Context="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </ChildContent>
+    <ErrorContent Context="ex">
+        <div class="p-4 bg-red-100 border border-red-400 text-red-700 m-4 rounded">
+            <h3 class="font-bold mb-2">Application Crash</h3>
+            <pre class="whitespace-pre-wrap text-sm">@ex.ToString()</pre>
+        </div>
+    </ErrorContent>
+</ErrorBoundary>

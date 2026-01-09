@@ -1,0 +1,107 @@
+﻿@page "/"
+@using NewsSMKN6Malang.Data
+@inject NewsService NewsService
+
+<!-- Hero Section -->
+<div class="py-16 md:py-24 relative overflow-hidden">
+    <div class="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+        <div class="relative z-10">
+            <h4 class="text-sm font-bold tracking-widest text-gray-500 mb-2 uppercase">SMK Negeri 6 Malang</h4>
+            <h1 class="text-5xl md:text-6xl font-heading font-bold leading-tight mb-6 text-gray-900">
+                Sekolah <span class="text-primary block">Pelopor Di Bidang Teknik</span>
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+                Sekolah menengah kejuruan yang menghasilkan lulusan unggul,
+                kompeten, dan siap kerja di dunia industri maupun wirausaha.
+            </p>
+            <div class="flex gap-4">
+                <button class="px-8 py-3 rounded-full font-semibold bg-primary text-white hover:-translate-y-1 hover:shadow-xl shadow-blue-600/30 transition-all">Gabung Sekarang</button>
+                <button class="px-8 py-3 rounded-full font-semibold border-2 border-gray-300 text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all">Lihat Profil</button>
+            </div>
+        </div>
+        <div class="relative">
+            <!-- Decorative Circle -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-secondary rounded-full -z-10 opacity-20 md:opacity-100"></div>
+            <!-- Image Placeholder -->
+            <div class="rounded-3xl overflow-hidden bg-gray-200 min-h-[400px] flex items-center justify-center shadow-2xl relative z-10">
+                <span class="text-gray-400 font-medium">Hero Image Area</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="bg-primary text-white py-12 mt-8 mb-16 shadow-inner">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-around text-center gap-8">
+            <div>
+                <h3 class="text-4xl font-heading font-bold mb-2">+5.2k</h3>
+                <p class="text-blue-100">Siswa Aktif & Alumni</p>
+            </div>
+            <div>
+                <h3 class="text-4xl font-heading font-bold mb-2">100%</h3>
+                <p class="text-blue-100">Lulusan Kompeten</p>
+            </div>
+            <div>
+                <h3 class="text-4xl font-heading font-bold mb-2">+65</h3>
+                <p class="text-blue-100">Penghargaan Diraih</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- News Section -->
+<div class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-heading font-bold text-gray-900">Berita & Agenda Terbaru</h2>
+            <a href="/news" class="px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors text-sm font-medium">Lihat Semua</a>
+        </div>
+
+        @if (newsList == null)
+        {
+            <div class="animate-pulse flex space-x-4">
+                <div class="flex-1 space-y-4 py-1">
+                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div class="space-y-2">
+                        <div class="h-4 bg-gray-200 rounded"></div>
+                        <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach (var item in newsList)
+                {
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer border border-gray-100">
+                        <div class="h-48 bg-gray-200 bg-cover bg-center relative" style="background-image: url('@item.ImageUrl')">
+                            <span class="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-xs font-medium shadow-md">@item.Category</span>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-sm text-gray-500 mb-2 block">@item.PublishedDate.ToString("dd MMMM yyyy")</span>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3 leading-snug col-span-2 group-hover:text-primary transition-colors">@item.Title</h3>
+                            <p class="text-gray-600 text-sm line-clamp-3 mb-4">@item.Description</p>
+                            <a href="#" class="text-primary font-semibold text-sm hover:underline inline-flex items-center gap-1">
+                                Baca Selengkapnya 
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<NewsItem> newsList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        newsList = await NewsService.GetNewsAsync();
+    }
+}
