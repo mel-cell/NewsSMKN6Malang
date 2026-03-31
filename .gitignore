@@ -1,21 +1,39 @@
-# Build results
+# .NET (C#, F#, VB.NET) ignore list
 [Bb]in/
 [Oo]bj/
+[Tt]est[Rr]esults/
 
-# VS Code
+# IDE / Editor Files
 .vscode/
-
-# User-specific files
-*.rsuser
+.idea/
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+*.rsuser
 
-# IDE
-.idea/
-*.slnx
+# Visual Studio Cache / Logs
+.vs/
+*.log
 
-# OS generated files
+# OS Generated Files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Other common ignores
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+
+# Photino / Blazor specific
+wwwroot/_framework/
+wwwroot/css/bootstrap/
+wwwroot/css/open-iconic/
+wwwroot/decode.js
+wwwroot/index.html.gz
+wwwroot/index.html.br

@@ -1,60 +1,90 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace NewsSMKN6Malang.Data
 {
     public class NewsService
     {
+        private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl;
+        private readonly string _adminEmail;
+        private readonly string _adminPassword;
+        private string? _token;
 
-        public NewsService(IConfiguration configuration)
+        public NewsService(HttpClient httpClient, IConfiguration configuration)
         {
-            _apiBaseUrl = configuration["ApiSettings:BaseUrl"];
+            _httpClient = httpClient;
+            _apiBaseUrl = configuration["ApiSettings:BaseUrl"]?.TrimEnd('/') ?? "";
+            _adminEmail = configuration["ApiSettings:AdminEmail"] ?? "";
+            _adminPassword = configuration["ApiSettings:AdminPassword"] ?? "";
         }
 
-        public Task<List<NewsItem>> GetNewsAsync()
+        private async Task EnsureAuthenticatedAsync()
         {
-            // Mock data simulating API response
-            var news = new List<NewsItem>
+            if (!string.IsNullOrEmpty(_token)) return;
+
+            try
             {
-                new NewsItem
-                {
-                    Id = 1,
-                    Title = "Juara 1 Lomba Kompetensi Siswa Tingkat Nasional",
-                    Description = "Siswa SMKN 6 Malang berhasil meraih medali emas dalam ajang LKS Nasional bidang Cloud Computing.",
-                    Category = "Prestasi",
-                    ImageUrl = "https://via.placeholder.com/400x250?text=Prestasi+Siswa",
-                    PublishedDate = DateTime.Now.AddDays(-2)
-                },
-                new NewsItem
-                {
-                    Id = 2,
-                    Title = "Kunjungan Industri ke PT. Telkom Indonesia",
-                    Description = "Siswa jurusan SIJA melakukan kunjungan industri untuk mempelajari infrastruktur jaringan modern.",
-                    Category = "Kegiatan",
-                    ImageUrl = "https://via.placeholder.com/400x250?text=Kunjungan+Industri",
-                    PublishedDate = DateTime.Now.AddDays(-5)
-                },
-                new NewsItem
-                {
-                    Id = 3,
-                    Title = "Penerimaan Peserta Didik Baru 2026 Dibuka",
-                    Description = "Segera daftarkan diri anda untuk menjadi bagian dari keluarga besar SMK Negeri 6 Malang.",
-                    Category = "Pengumuman",
-                    ImageUrl = "https://via.placeholder.com/400x250?text=PPDB+2026",
-                    PublishedDate = DateTime.Now.AddDays(-10)
-                }
-            };
+                var loginData = new { email = _adminEmail, password = _adminPassword };
+                var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}/api/users/login", loginData);
 
-            return Task.FromResult(news);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                    _token = result?.Token;
+                    if (!string.IsNullOrEmpty(_token))
+                    {
+                        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("JWT", _token);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Login failed: {ex.Message}");
+            }
         }
-        public async Task<NewsItem> GetNewsByIdAsync(int id)
+
+        public async Task<List<NewsItem>> GetNewsAsync()
         {
-            var newsList = await GetNewsAsync();
-            return newsList.FirstOrDefault(n => n.Id == id);
+            try
+            {
+                // We don't always need auth for GET news, but if we do, we can call EnsureAuthenticatedAsync
+                // await EnsureAuthenticatedAsync(); 
+
+                var response = await _httpClient.GetFromJsonAsync<PayloadResponse<NewsItem>>($"{_apiBaseUrl}/api/news");
+                return response?.Docs ?? new List<NewsItem>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching news: {ex.Message}");
+                return new List<NewsItem>();
+            }
+        }
+
+        public async Task<NewsItem?> GetNewsByIdAsync(string id)
+        {
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<NewsItem>($"{_apiBaseUrl}/api/news/{id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching news by id: {ex.Message}");
+                return null;
+            }
+        }
+
+        private class LoginResponse
+        {
+            [JsonPropertyName("token")]
+            public string? Token { get; set; }
         }
     }
 }

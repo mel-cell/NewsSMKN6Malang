@@ -20,11 +20,12 @@ namespace NewsSMKN6Malang
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
-            
+
             appBuilder.Services.AddSingleton<IConfiguration>(config);
 
             appBuilder.Services
-                .AddLogging();
+                .AddLogging()
+                .AddHttpClient();
 
             // Register services
             appBuilder.Services.AddSingleton<NewsSMKN6Malang.Data.NewsService>();
@@ -37,7 +38,7 @@ namespace NewsSMKN6Malang
                 .SetUseOsDefaultSize(false)
                 .SetSize(1000, 800)
                 .SetIconFile("favicon.ico")
-                .Load("index.html"); 
+                .Load("index.html");
 
             AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
             {

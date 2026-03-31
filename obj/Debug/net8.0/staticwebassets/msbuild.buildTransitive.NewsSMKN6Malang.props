@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/NewsSMKN6Malang.props" />
-</Project>
