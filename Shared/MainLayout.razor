@@ -64,7 +64,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
         <!-- Header -->
-        <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-10">
+        <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 z-10 relative">
             <div class="flex items-center gap-4 flex-1">
                 <button class="md:hidden text-gray-500">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -76,10 +76,48 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <button class="text-gray-400 hover:text-primary transition-colors relative">
-                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                </button>
+                <div class="relative">
+                    <button @onclick="ToggleNotifications" class="text-gray-400 hover:text-primary transition-colors relative block p-1">
+                        @if (recentNews != null && recentNews.Any(n => (DateTime.UtcNow - n.CreatedAt).TotalDays < 3))
+                        {
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        }
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    </button>
+
+                    <!-- Notifications Dropdown Panel -->
+                    @if (showNotifications)
+                    {
+                        <div class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in duration-200">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-800 uppercase tracking-wide">Notifikasi Terbaru</span>
+                                <span class="text-[10px] bg-primary text-white rounded-full px-2 py-0.5">Hari Ini</span>
+                            </div>
+                            <div class="max-h-[300px] overflow-y-auto">
+                                @if (recentNews == null || !recentNews.Any())
+                                {
+                                    <div class="p-6 text-center text-xs text-gray-400">Belum ada pembaruan aktivitas.</div>
+                                }
+                                else
+                                {
+                                    @foreach (var n in recentNews)
+                                    {
+                                        <a href="/news/@n.Id" @onclick="() => showNotifications = false" class="block p-4 border-b border-gray-50 hover:bg-blue-50 transition-colors">
+                                            <p class="text-xs font-bold text-gray-800 mb-1 leading-snug">@n.Title</p>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[10px] text-primary font-semibold">@n.DisplayCategory</span>
+                                                <span class="text-[10px] text-gray-400">@n.DisplayDate.ToString("dd MMM HH:mm")</span>
+                                            </div>
+                                        </a>
+                                    }
+                                }
+                            </div>
+                            <div class="p-2 text-center bg-gray-50 border-t border-gray-100">
+                                <a href="/news" @onclick="() => showNotifications = false" class="text-xs text-primary font-bold hover:underline">Lihat Semua Berita</a>
+                            </div>
+                        </div>
+                    }
+                </div>
                 
                 <!-- Admin Popup Toggle Button -->
                 <button @onclick="ToggleAdminModal" title="Admin Panel" class="h-8 w-8 rounded-lg bg-blue-600 overflow-hidden border border-blue-700 flex items-center justify-center shadow-sm hover:scale-105 transition-transform text-white">
@@ -97,10 +135,9 @@
     @if (showAdminModal)
     {
         <!-- Full-Screen Modal for Payload CMS -->
+        <!-- Omitted unchanged code for brevity... -->
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 md:p-8 animate-in fade-in duration-200">
             <div class="bg-white rounded-xl shadow-2xl w-full h-full max-w-7xl flex flex-col overflow-hidden relative border border-gray-200">
-                
-                <!-- Modal Header -->
                 <div class="h-14 bg-gray-50 border-b border-gray-100 flex items-center justify-between px-4 flex-shrink-0">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
@@ -128,10 +165,12 @@
 
 @code {
     private bool showAdminModal = false;
+    private bool showNotifications = false;
     private string EndpointUrl => $"{Configuration["ApiSettings:BaseUrl"] ?? "https://test.smkn6malang.sch.id"}/admin/collections/news";
     
     private string searchQuery = "";
     private Dictionary<string, int>? categoryCounts;
+    private List<NewsItem>? recentNews;
 
     protected override async Task OnInitializedAsync()
     {
@@ -139,17 +178,26 @@
         categoryCounts = allNews
             .GroupBy(n => n.CategoryRaw)
             .ToDictionary(g => g.Key, g => g.Count());
+            
+        recentNews = allNews.OrderByDescending(n => n.CreatedAt).Take(5).ToList();
     }
 
     private void ToggleAdminModal()
     {
         showAdminModal = !showAdminModal;
+        showNotifications = false;
+    }
+    
+    private void ToggleNotifications()
+    {
+        showNotifications = !showNotifications;
     }
 
     private void HandleSearch(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
     {
         if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(searchQuery))
         {
+            showNotifications = false;
             Navigation.NavigateTo($"/news?q={Uri.EscapeDataString(searchQuery)}");
         }
     }
