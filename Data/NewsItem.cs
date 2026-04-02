@@ -37,7 +37,7 @@ namespace NewsSMKN6Malang.Data
         [JsonPropertyName("status")]
         public System.Text.Json.JsonElement? StatusElement { get; set; }
 
-        [JsonPropertyName("category")]
+        [JsonPropertyName("categories")]
         public System.Text.Json.JsonElement? CategoryElement { get; set; }
 
         [JsonPropertyName("heroImage")]
@@ -64,9 +64,20 @@ namespace NewsSMKN6Malang.Data
                 if (CategoryElement.HasValue)
                 {
                     var el = CategoryElement.Value;
-                    if (el.ValueKind == System.Text.Json.JsonValueKind.String) return el.GetString() ?? "Berita";
-                    if (el.ValueKind == System.Text.Json.JsonValueKind.Object && el.TryGetProperty("title", out var titleProp))
-                        return titleProp.GetString() ?? "Berita";
+                    if (el.ValueKind == System.Text.Json.JsonValueKind.Array && el.GetArrayLength() > 0)
+                    {
+                        var firstCat = el.EnumerateArray().FirstOrDefault();
+                        if (firstCat.ValueKind == System.Text.Json.JsonValueKind.Object && firstCat.TryGetProperty("title", out var titleProp))
+                            return titleProp.GetString() ?? "Berita";
+                    }
+                    else if (el.ValueKind == System.Text.Json.JsonValueKind.String) 
+                    {
+                        return el.GetString() ?? "Berita";
+                    }
+                    else if (el.ValueKind == System.Text.Json.JsonValueKind.Object && el.TryGetProperty("title", out var titlePropObj))
+                    {
+                        return titlePropObj.GetString() ?? "Berita";
+                    }
                 }
                 return "Berita";
             }
