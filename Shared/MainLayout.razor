@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@inject NavigationManager Navigation
 
 <div class="flex h-screen bg-gray-50 font-sans overflow-hidden relative">
     <!-- Sidebar -->
@@ -24,15 +25,15 @@
             </NavLink>
 
             <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-8 px-2">Kategori</div>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
+            <a href="/news?category=Teknologi" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
                 <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                 <span class="font-medium">Teknologi</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
+            <a href="/news?category=Prestasi" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
                 <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
                 <span class="font-medium">Prestasi</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
+            <a href="/news?category=Akademik" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all">
                 <span class="w-2 h-2 rounded-full bg-green-500"></span>
                 <span class="font-medium">Akademik</span>
             </a>
@@ -43,7 +44,7 @@
                 <div class="relative z-10">
                     <h5 class="text-sm font-bold text-primary mb-1">PPDB 2026</h5>
                     <p class="text-xs text-blue-600/80 mb-3">Pendaftaran segera dibuka.</p>
-                    <button class="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:shadow-lg hover:-translate-y-0.5 transition-all">Info Detail</button>
+                    <a href="https://ppdb.smkn6malang.sch.id" target="_blank" class="inline-block text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:shadow-lg hover:-translate-y-0.5 transition-all">Info Detail</a>
                 </div>
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-200/50 rounded-full group-hover:scale-110 transition-transform"></div>
             </div>
@@ -59,7 +60,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div class="relative w-full max-w-sm hidden md:block">
-                    <input type="text" placeholder="Cari berita..." class="w-full pl-10 pr-4 py-2 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none text-gray-600 placeholder-gray-400">
+                    <input type="text" @bind="searchQuery" @bind:event="oninput" @onkeyup="HandleSearch" placeholder="Cari berita... (Tekan Enter)" class="w-full pl-10 pr-4 py-2 bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all outline-none text-gray-600 placeholder-gray-400">
                     <svg class="absolute left-3 top-2.5 text-gray-400 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
@@ -118,9 +119,19 @@
 @code {
     private bool showAdminModal = false;
     private string EndpointUrl => $"{Configuration["ApiSettings:BaseUrl"] ?? "https://test.smkn6malang.sch.id"}/admin/collections/news";
+    
+    private string searchQuery = "";
 
     private void ToggleAdminModal()
     {
         showAdminModal = !showAdminModal;
+    }
+
+    private void HandleSearch(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(searchQuery))
+        {
+            Navigation.NavigateTo($"/news?q={Uri.EscapeDataString(searchQuery)}");
+        }
     }
 }

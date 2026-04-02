@@ -72,55 +72,34 @@
         </div>
     </div>
 
-    <!-- Bottom Section: Video / Other News -->
+    <!-- Bottom Section: Other News -->
     <div>
         <div class="flex justify-between items-center mb-6">
-            <h3 class="font-bold text-xl text-gray-800">Galeri & Video</h3>
-            <div class="flex gap-2">
-                <button class="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 shadow-sm transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 shadow-sm transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-            </div>
+            <h3 class="font-bold text-xl text-gray-800">Berita Lainnya</h3>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Video Card 1 -->
-            <div class="group cursor-pointer">
-                <div class="relative h-48 rounded-xl overflow-hidden mb-3 shadow-md">
-                    <img src="https://via.placeholder.com/400x300?text=Video+Kegiatan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                        <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-primary"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            @if (newsList != null && newsList.Count > 1)
+            {
+                var otherNews = newsList.Skip(1).Take(2).ToList();
+                foreach (var item in otherNews)
+                {
+                    <a href="/news/@item.Id" class="group cursor-pointer">
+                        <div class="relative h-48 rounded-xl overflow-hidden mb-3 shadow-md">
+                            <img src="@item.DisplayImageUrl" alt="@item.Title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <span class="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded">@item.DisplayCategory</span>
                         </div>
-                    </div>
-                    <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded">05:20</span>
-                </div>
-                <h4 class="font-bold text-gray-800 leading-snug group-hover:text-primary transition-colors">Dokumentasi Ulang Tahun Sekolah ke-45</h4>
-                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    2 Hari yang lalu
-                </p>
-            </div>
+                        <h4 class="font-bold text-gray-800 leading-snug group-hover:text-primary transition-colors line-clamp-2">@item.Title</h4>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            @item.DisplayDate.ToString("dd MMMM yyyy")
+                        </p>
+                    </a>
+                }
+            }
 
-             <!-- Video Card 2 -->
-             <div class="group cursor-pointer">
-                <div class="relative h-48 rounded-xl overflow-hidden mb-3 shadow-md">
-                    <img src="https://via.placeholder.com/400x300?text=Profil+Jurusan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                        <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-primary"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </div>
-                    </div>
-                    <span class="absolute bottom-2 right-2 bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded">12:30</span>
-                </div>
-                <h4 class="font-bold text-gray-800 leading-snug group-hover:text-primary transition-colors">Profil Jurusan Rekayasa Perangkat Lunak</h4>
-                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    1 Minggu yang lalu
-                </p>
-            </div>
-
-            <!-- More News List -->
-            <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl p-5 border border-blue-100 shadow-sm flex flex-col">
+            <!-- Announcements Column -->
+            <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl p-5 border border-blue-100 shadow-sm flex flex-col h-full">
                 <div class="flex items-center gap-2 mb-4">
                     <span class="p-1.5 bg-blue-100 rounded-md text-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
@@ -130,22 +109,22 @@
                 
                  <ul class="space-y-4 flex-1">
                      <li class="pb-3 border-b border-blue-100 last:border-0 last:pb-0">
-                         <a href="#" class="block group">
+                         <a href="/news" class="block group">
                              <span class="text-[10px] font-bold text-blue-500 mb-1 block uppercase">Akademik • Baru</span>
                              <p class="text-sm font-bold text-gray-700 group-hover:text-primary transition-colors leading-tight">Jadwal Ujian Akhir Semester Genap T.A 2025/2026</p>
                          </a>
                      </li>
                       <li class="pb-3 border-b border-blue-100 last:border-0 last:pb-0">
-                         <a href="#" class="block group">
+                         <a href="/news" class="block group">
                              <span class="text-[10px] font-bold text-gray-400 mb-1 block uppercase">Kesiswaan</span>
                              <p class="text-sm font-bold text-gray-700 group-hover:text-primary transition-colors leading-tight">Tata Tertib Baru Siswa Tahun Ajaran 2026</p>
                          </a>
                      </li>
                  </ul>
-                 <button class="w-full mt-4 bg-white text-primary text-xs font-bold py-2.5 rounded-lg border border-blue-200 hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 group">
-                     Lihat Semua
+                 <a href="/news" class="w-full mt-4 bg-white text-primary text-xs font-bold py-2.5 rounded-lg border border-blue-200 hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 group">
+                     Lihat Semua Pengumuman
                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                 </button>
+                 </a>
             </div>
         </div>
     </div>

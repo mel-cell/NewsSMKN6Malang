@@ -1,11 +1,16 @@
 @page "/news"
 @using NewsSMKN6Malang.Data
 @inject NewsService NewsService
+@inject NavigationManager Navigation
 
 <div class="max-w-7xl mx-auto space-y-8 pb-10 mt-6">
     <div class="mb-8">
-        <h1 class="text-3xl font-heading font-bold text-gray-800 mb-2">Berita Terkini</h1>
-        <p class="text-gray-500">Dapatkan informasi, pengumuman, dan berita terbaru dari kawasan lingkungan sekolah.</p>
+        <h1 class="text-3xl font-heading font-bold text-gray-800 mb-2">
+            @(string.IsNullOrWhiteSpace(Category) ? "Berita Terkini" : $"Kategori: {Category}")
+        </h1>
+        <p class="text-gray-500">
+            @(string.IsNullOrWhiteSpace(Q) ? "Dapatkan informasi, pengumuman, dan berita terbaru dari kawasan lingkungan sekolah." : $"Hasil pencarian untuk '{Q}'")
+        </p>
     </div>
 
     @if (newsList == null)
@@ -17,7 +22,11 @@
     else if (!newsList.Any())
     {
         <div class="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-gray-500 text-lg">Belum ada berita yang dipublikasikan.</p>
+            <p class="text-gray-500 text-lg">Belum ada berita yang sesuai dengan kriteria.</p>
+            @if (!string.IsNullOrWhiteSpace(Q) || !string.IsNullOrWhiteSpace(Category))
+            {
+                <a href="/news" class="mt-4 inline-block text-primary font-bold hover:underline">Tampilkan semua berita</a>
+            }
         </div>
     }
     else
@@ -53,10 +62,39 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery]
+    public string? Q { get; set; }
+
+    [SupplyParameterFromQuery]
+    public string? Category { get; set; }
+
     private List<NewsItem>? newsList;
 
     protected override async Task OnInitializedAsync()
     {
-        newsList = await NewsService.GetNewsAsync();
+        await LoadDataAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        newsList = null;
+        var allNews = await NewsService.GetNewsAsync();
+
+        if (!string.IsNullOrWhiteSpace(Category))
+        {
+            allNews = allNews.Where(n => string.Equals(n.Category, Category, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(Q))
+        {
+             allNews = allNews.Where(n => n.Title.Contains(Q, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        newsList = allNews;
     }
 }
