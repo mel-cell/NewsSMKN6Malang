@@ -87,7 +87,7 @@
 
         if (!string.IsNullOrWhiteSpace(Category))
         {
-            allNews = allNews.Where(n => string.Equals(n.Category, Category, StringComparison.OrdinalIgnoreCase)).ToList();
+            allNews = allNews.Where(n => string.Equals(n.CategoryRaw, Category, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if (!string.IsNullOrWhiteSpace(Q))

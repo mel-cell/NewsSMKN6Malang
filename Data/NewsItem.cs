@@ -35,10 +35,10 @@ namespace NewsSMKN6Malang.Data
         public object? Content { get; set; }
 
         [JsonPropertyName("status")]
-        public string Status { get; set; } = string.Empty;
+        public System.Text.Json.JsonElement? StatusElement { get; set; }
 
         [JsonPropertyName("category")]
-        public string? Category { get; set; }
+        public System.Text.Json.JsonElement? CategoryElement { get; set; }
 
         [JsonPropertyName("heroImage")]
         public ImageInfo? HeroImage { get; set; }
@@ -56,7 +56,24 @@ namespace NewsSMKN6Malang.Data
         public string DisplayImageUrl => HeroImage?.Url != null
             ? (HeroImage.Url.StartsWith("http") ? HeroImage.Url : $"https://test.smkn6malang.sch.id{HeroImage.Url}")
             : "https://via.placeholder.com/400x250?text=No+Image";
-        public string DisplayCategory => Category ?? "Berita";
+
+        public string DisplayCategory 
+        {
+            get 
+            {
+                if (CategoryElement.HasValue)
+                {
+                    var el = CategoryElement.Value;
+                    if (el.ValueKind == System.Text.Json.JsonValueKind.String) return el.GetString() ?? "Berita";
+                    if (el.ValueKind == System.Text.Json.JsonValueKind.Object && el.TryGetProperty("title", out var titleProp))
+                        return titleProp.GetString() ?? "Berita";
+                }
+                return "Berita";
+            }
+        }
+        
+        public string CategoryRaw => DisplayCategory;
+
         public DateTime DisplayDate => CreatedAt;
     }
 
