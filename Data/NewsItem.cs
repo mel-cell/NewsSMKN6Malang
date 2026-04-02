@@ -26,7 +26,7 @@ namespace NewsSMKN6Malang.Data
     public class NewsItem
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
+        public int Id { get; set; }
 
         [JsonPropertyName("title")]
         public string Title { get; set; } = string.Empty;
@@ -40,8 +40,8 @@ namespace NewsSMKN6Malang.Data
         [JsonPropertyName("category")]
         public string? Category { get; set; }
 
-        [JsonPropertyName("image")]
-        public ImageInfo? Image { get; set; }
+        [JsonPropertyName("heroImage")]
+        public ImageInfo? HeroImage { get; set; }
 
         [JsonPropertyName("createdAt")]
         public DateTime CreatedAt { get; set; }
@@ -49,14 +49,14 @@ namespace NewsSMKN6Malang.Data
         [JsonPropertyName("updatedAt")]
         public DateTime UpdatedAt { get; set; }
 
-        // Added back for compatibility with UI
-        public string Description { get; set; } = string.Empty;
+        [JsonPropertyName("excerpts")]
+        public string? Description { get; set; }
 
         // Helper property to map API fields to UI fields
-        public string DisplayImageUrl => Image?.Url != null
-            ? (Image.Url.StartsWith("http") ? Image.Url : $"https://test.smkn6malang.sch.id{Image.Url}")
+        public string DisplayImageUrl => HeroImage?.Url != null
+            ? (HeroImage.Url.StartsWith("http") ? HeroImage.Url : $"https://test.smkn6malang.sch.id{HeroImage.Url}")
             : "https://via.placeholder.com/400x250?text=No+Image";
-        public string DisplayCategory => Category ?? "Umum";
+        public string DisplayCategory => Category ?? "Berita";
         public DateTime DisplayDate => CreatedAt;
     }
 
@@ -66,6 +66,6 @@ namespace NewsSMKN6Malang.Data
         public string Url { get; set; } = string.Empty;
 
         [JsonPropertyName("alt")]
-        public string Alt { get; set; } = string.Empty;
+        public string? Alt { get; set; }
     }
 }

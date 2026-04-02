@@ -34,7 +34,7 @@ namespace NewsSMKN6Malang.Data
             }
         }
 
-        public async Task<NewsItem?> GetNewsByIdAsync(string id)
+        public async Task<NewsItem?> GetNewsByIdAsync(int id)
         {
             try
             {
