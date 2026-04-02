@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
-<div class="flex h-screen bg-gray-50 font-sans overflow-hidden">
+<div class="flex h-screen bg-gray-50 font-sans overflow-hidden relative">
     <!-- Sidebar -->
     <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex z-20">
         <div class="p-6 flex items-center gap-3">
@@ -20,14 +21,6 @@
             <NavLink href="/news" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all group">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 <span class="font-medium">Berita Terkini</span>
-            </NavLink>
-            <NavLink href="/videos" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-                <span class="font-medium">Video Kegiatan</span>
-            </NavLink>
-            <NavLink href="/admin/news" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-primary transition-all group">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                <span class="font-medium">Admin Berita</span>
             </NavLink>
 
             <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-8 px-2">Kategori</div>
@@ -76,9 +69,11 @@
                     <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 </button>
-                <div class="h-8 w-8 rounded-lg bg-gray-200 overflow-hidden border border-gray-200">
-                     <img src="https://ui-avatars.com/api/?name=Admin+SMK&background=0056D2&color=fff" alt="User" class="w-full h-full object-cover">
-                </div>
+                
+                <!-- Admin Popup Toggle Button -->
+                <button @onclick="ToggleAdminModal" title="Kelola Admin Payload" class="h-8 w-8 rounded-lg bg-blue-600 overflow-hidden border border-blue-700 flex items-center justify-center shadow-sm hover:scale-105 transition-transform">
+                     <span class="text-white text-xs font-bold leading-none">AS</span>
+                </button>
             </div>
         </header>
 
@@ -87,4 +82,45 @@
             @Body
         </main>
     </div>
+
+    @if (showAdminModal)
+    {
+        <!-- Full-Screen Modal for Payload CMS -->
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 md:p-8 animate-in fade-in duration-200">
+            <div class="bg-white rounded-xl shadow-2xl w-full h-full max-w-7xl flex flex-col overflow-hidden relative border border-gray-200">
+                
+                <!-- Modal Header -->
+                <div class="h-14 bg-gray-50 border-b border-gray-100 flex items-center justify-between px-4 flex-shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-black rounded-md flex items-center justify-center">
+                            <span class="text-white font-bold text-xs uppercase">PY</span>
+                        </div>
+                        <h2 class="font-bold text-gray-800 text-sm">Panel Payload CMS (Live)</h2>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button @onclick="ToggleAdminModal" class="p-2 text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2">
+                            <span class="text-xs font-semibold">Tutup</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Iframe Embed -->
+                <div class="flex-1 bg-white relative">
+                    <iframe src="@EndpointUrl" class="absolute inset-0 w-full h-full border-0"></iframe>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+@code {
+    private bool showAdminModal = false;
+    private string EndpointUrl => $"{Configuration["ApiSettings:BaseUrl"] ?? "https://test.smkn6malang.sch.id"}/admin/collections/news";
+
+    private void ToggleAdminModal()
+    {
+        showAdminModal = !showAdminModal;
+    }
+}
