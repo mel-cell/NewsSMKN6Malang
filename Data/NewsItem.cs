@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace NewsSMKN6Malang.Data
@@ -66,7 +67,7 @@ namespace NewsSMKN6Malang.Data
                     var el = CategoryElement.Value;
                     if (el.ValueKind == System.Text.Json.JsonValueKind.Array && el.GetArrayLength() > 0)
                     {
-                        var firstCat = el.EnumerateArray().FirstOrDefault();
+                        var firstCat = el.EnumerateArray().First();
                         if (firstCat.ValueKind == System.Text.Json.JsonValueKind.Object && firstCat.TryGetProperty("title", out var titleProp))
                             return titleProp.GetString() ?? "Berita";
                     }

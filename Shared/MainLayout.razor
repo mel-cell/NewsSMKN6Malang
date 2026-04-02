@@ -164,6 +164,7 @@
 </div>
 
 @code {
+#nullable enable
     private bool showAdminModal = false;
     private bool showNotifications = false;
     private string EndpointUrl => $"{Configuration["ApiSettings:BaseUrl"] ?? "https://test.smkn6malang.sch.id"}/admin/collections/news";
