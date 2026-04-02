@@ -14,25 +14,21 @@ namespace NewsSMKN6Malang.Data
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl;
-        private readonly string _adminEmail;
-        private readonly string _adminPassword;
         private string? _token;
+        
+        public bool IsAuthenticated => !string.IsNullOrEmpty(_token);
 
         public NewsService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _apiBaseUrl = configuration["ApiSettings:BaseUrl"]?.TrimEnd('/') ?? "";
-            _adminEmail = configuration["ApiSettings:AdminEmail"] ?? "";
-            _adminPassword = configuration["ApiSettings:AdminPassword"] ?? "";
         }
 
-        private async Task EnsureAuthenticatedAsync()
+        public async Task<bool> LoginAsync(string email, string password)
         {
-            if (!string.IsNullOrEmpty(_token)) return;
-
             try
             {
-                var loginData = new { email = _adminEmail, password = _adminPassword };
+                var loginData = new { email, password };
                 var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}/api/users/login", loginData);
 
                 if (response.IsSuccessStatusCode)
@@ -42,6 +38,7 @@ namespace NewsSMKN6Malang.Data
                     if (!string.IsNullOrEmpty(_token))
                     {
                         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("JWT", _token);
+                        return true;
                     }
                 }
             }
@@ -49,6 +46,14 @@ namespace NewsSMKN6Malang.Data
             {
                 Console.WriteLine($"Login failed: {ex.Message}");
             }
+            
+            return false;
+        }
+
+        public void Logout()
+        {
+            _token = null;
+            _httpClient.DefaultRequestHeaders.Authorization = null;
         }
 
         public async Task<List<NewsItem>> GetNewsAsync()
@@ -81,10 +86,76 @@ namespace NewsSMKN6Malang.Data
             }
         }
 
+        public async Task<bool> CreateNewsAsync(NewsCreateDto news)
+        {
+            if (!IsAuthenticated) return false;
+            if (string.IsNullOrEmpty(_token)) return false;
+
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}/api/news", news);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating news: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateNewsAsync(string id, NewsCreateDto news)
+        {
+            if (!IsAuthenticated) return false;
+            if (string.IsNullOrEmpty(_token)) return false;
+
+            try
+            {
+                var response = await _httpClient.PatchAsJsonAsync($"{_apiBaseUrl}/api/news/{id}", news);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating news: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteNewsAsync(string id)
+        {
+            if (!IsAuthenticated) return false;
+            if (string.IsNullOrEmpty(_token)) return false;
+
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{_apiBaseUrl}/api/news/{id}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting news: {ex.Message}");
+                return false;
+            }
+        }
+
         private class LoginResponse
         {
             [JsonPropertyName("token")]
             public string? Token { get; set; }
         }
+    }
+
+    public class NewsCreateDto
+    {
+        [JsonPropertyName("title")]
+        public string Title { get; set; } = string.Empty;
+
+        [JsonPropertyName("excerpts")]
+        public string Excerpts { get; set; } = string.Empty;
+
+        [JsonPropertyName("content")]
+        public object? Content { get; set; }
+
+        [JsonPropertyName("_status")]
+        public string Status { get; set; } = "published";
     }
 }

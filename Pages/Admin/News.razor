@@ -1,0 +1,200 @@
+@page "/admin/news"
+@using NewsSMKN6Malang.Data
+@inject NewsService NewsService
+@inject NavigationManager NavigationManager
+
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">Manajemen Berita</h1>
+    <button @onclick="ShowCreateForm" class="bg-primary text-white px-4 py-2 rounded shadow hover:bg-blue-600">Tambah Berita</button>
+</div>
+
+@if (isEditing || isCreating)
+{
+    <div class="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-100">
+        <h2 class="text-xl font-bold mb-4">@(isCreating ? "Tambah Berita Baru" : "Edit Berita")</h2>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+            <input @bind="currentDto.Title" type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary border p-2" />
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ringkasan (Excerpts)</label>
+            <textarea @bind="currentDto.Excerpts" rows="2" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary border p-2"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select @bind="currentDto.Status" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary border p-2">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Konten Utama</label>
+            <textarea @bind="rawContent" rows="5" placeholder="Tulis isi berita di sini..." class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary border p-2"></textarea>
+            <small class="text-gray-500">Teks ini akan otomatis dibuatkan menjadi format Lexical RichText dari Payload.</small>
+        </div>
+
+        <div class="flex gap-2">
+            <button @onclick="SaveNews" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Simpan</button>
+            <button @onclick="CancelEdit" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Batal</button>
+        </div>
+    </div>
+}
+
+@if (newsList == null)
+{
+    <p class="text-gray-500">Memuat berita...</p>
+}
+else if (!newsList.Any())
+{
+    <p class="text-gray-500">Belum ada berita. Silakan tambahkan berita pertama Anda.</p>
+}
+else
+{
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 border-b border-gray-100">
+                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Judul</th>
+                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Tanggal</th>
+                    <th class="py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
+                    <th class="py-3 px-4 text-sm font-semibold text-gray-600 text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in newsList)
+                {
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        <td class="py-3 px-4">@item.Title</td>
+                        <td class="py-3 px-4">@item.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @(item.Status == "published" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800")">
+                                @item.Status
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <button @onclick="() => EditNews(item)" class="text-blue-600 hover:underline mr-3 text-sm">Edit</button>
+                            <button @onclick="() => DeleteItem(item.Id)" class="text-red-600 hover:underline text-sm">Hapus</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<NewsItem>? newsList;
+    private bool isEditing = false;
+    private bool isCreating = false;
+    private string editingId = string.Empty;
+    private NewsCreateDto currentDto = new();
+    private string rawContent = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NewsService.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/admin/login");
+            return;
+        }
+        await LoadNews();
+    }
+
+    private async Task LoadNews()
+    {
+        newsList = await NewsService.GetNewsAsync();
+    }
+
+    private void ShowCreateForm()
+    {
+        isCreating = true;
+        isEditing = false;
+        currentDto = new NewsCreateDto();
+        rawContent = string.Empty;
+    }
+
+    private void EditNews(NewsItem item)
+    {
+        isEditing = true;
+        isCreating = false;
+        editingId = item.Id;
+        currentDto = new NewsCreateDto
+        {
+            Title = item.Title,
+            Status = item.Status,
+            Excerpts = item.Description
+        };
+        rawContent = "Ubah teks ini jika akan diperbarui. (Lexical tidak dimuat untuk versi desktop).";
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        isCreating = false;
+    }
+
+    private async Task SaveNews()
+    {
+        currentDto.Content = CreateLexicalContent(rawContent);
+
+        if (isCreating)
+        {
+            await NewsService.CreateNewsAsync(currentDto);
+        }
+        else if (isEditing)
+        {
+            await NewsService.UpdateNewsAsync(editingId, currentDto);
+        }
+
+        isCreating = false;
+        isEditing = false;
+        await LoadNews();
+    }
+
+    private async Task DeleteItem(string id)
+    {
+        await NewsService.DeleteNewsAsync(id);
+        await LoadNews();
+    }
+
+    private static object CreateLexicalContent(string text)
+    {
+        return new
+        {
+            root = new
+            {
+                type = "root",
+                format = "",
+                indent = 0,
+                version = 1,
+                children = new[]
+                {
+                    new
+                    {
+                        type = "paragraph",
+                        format = "",
+                        indent = 0,
+                        version = 1,
+                        children = new[]
+                        {
+                            new
+                            {
+                                detail = 0,
+                                format = 0,
+                                mode = "normal",
+                                style = "",
+                                text = text,
+                                type = "text",
+                                version = 1
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+}
