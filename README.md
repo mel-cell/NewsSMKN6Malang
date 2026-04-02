@@ -63,7 +63,6 @@ Pengaturan URL API Payload CMS dapat dikelola melalui file `appsettings.json`:
 ## 👨‍💻 Kontributor
 
 - **Mell-cell** (Project Owner)
-- **Antigravity AI** (Assistant Developer)
 
 ---
 
