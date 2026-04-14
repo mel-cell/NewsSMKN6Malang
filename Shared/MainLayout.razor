@@ -3,6 +3,7 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @inject NavigationManager Navigation
 @inject NewsService NewsService
+@inject IJSRuntime JSRuntime
 
 <div class="flex h-screen bg-gray-50 font-sans overflow-hidden relative">
     <!-- Sidebar -->
@@ -54,7 +55,7 @@
                 <div class="relative z-10">
                     <h5 class="text-sm font-bold text-primary mb-1">PPDB 2026</h5>
                     <p class="text-xs text-blue-600/80 mb-3">Pendaftaran segera dibuka.</p>
-                    <a href="https://test.smkn6malang.sch.id/pendaftaran" target="_blank" class="inline-block text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:shadow-lg hover:-translate-y-0.5 transition-all">Info Detail</a>
+                    <button @onclick='() => OpenExternalUrl("https://test.smkn6malang.sch.id/pendaftaran")' class="inline-block text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:shadow-lg hover:-translate-y-0.5 transition-all outline-none">Info Detail</button>
                 </div>
                 <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-blue-200/50 rounded-full group-hover:scale-110 transition-transform"></div>
             </div>
@@ -201,5 +202,11 @@
             showNotifications = false;
             Navigation.NavigateTo($"/news?q={Uri.EscapeDataString(searchQuery)}");
         }
+    }
+
+
+    private async Task OpenExternalUrl(string url)
+    {
+        await JSRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 }

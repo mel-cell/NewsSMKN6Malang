@@ -78,8 +78,8 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @if (newsList != null && newsList.Count > 1)
             {
-                var otherNews = newsList.Skip(1).Take(2).ToList();
-                foreach (var item in otherNews)
+                // Show more news cards instead of announcements
+                foreach (var item in newsList.Skip(1).Take(3))
                 {
                     <a href="/news/@item.Id" class="group cursor-pointer">
                         <div class="relative h-48 rounded-xl overflow-hidden mb-3 shadow-md">
@@ -94,35 +94,7 @@
                     </a>
                 }
             }
-
-            <!-- Announcements Column -->
-            <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl p-5 border border-blue-100 shadow-sm flex flex-col h-full">
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="p-1.5 bg-blue-100 rounded-md text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-                    </span>
-                    <h4 class="font-bold text-gray-800 text-sm uppercase tracking-wide">Pengumuman</h4>
-                </div>
-                
-                 <ul class="space-y-4 flex-1">
-                     <li class="pb-3 border-b border-blue-100 last:border-0 last:pb-0">
-                         <a href="/news" class="block group">
-                             <span class="text-[10px] font-bold text-blue-500 mb-1 block uppercase">Akademik • Baru</span>
-                             <p class="text-sm font-bold text-gray-700 group-hover:text-primary transition-colors leading-tight">Jadwal Ujian Akhir Semester Genap T.A 2025/2026</p>
-                         </a>
-                     </li>
-                      <li class="pb-3 border-b border-blue-100 last:border-0 last:pb-0">
-                         <a href="/news" class="block group">
-                             <span class="text-[10px] font-bold text-gray-400 mb-1 block uppercase">Kesiswaan</span>
-                             <p class="text-sm font-bold text-gray-700 group-hover:text-primary transition-colors leading-tight">Tata Tertib Baru Siswa Tahun Ajaran 2026</p>
-                         </a>
-                     </li>
-                 </ul>
-                 <a href="/news" class="w-full mt-4 bg-white text-primary text-xs font-bold py-2.5 rounded-lg border border-blue-200 hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-2 group">
-                     Lihat Semua Pengumuman
-                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                 </a>
-            </div>
+        </div>
         </div>
     </div>
 
